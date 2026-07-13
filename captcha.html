@@ -66,6 +66,12 @@
             color: #ff6b6b;
             font-size: 14px;
         }
+        .btn-discord {
+            background: #5865f2;
+        }
+        .btn-discord:hover {
+            background: #4752c4;
+        }
     </style>
 </head>
 <body>
@@ -82,7 +88,11 @@
             </ol>
         </div>
         
-        <button class="btn btn-discord" onclick="openDiscord()">🚀 Открыть Discord</button>
+        <!-- ПРЯМАЯ ССЫЛКА (без JS) -->
+        <a href="https://discord.com/login" target="_blank" rel="noopener noreferrer" class="btn btn-discord">
+            🚀 Открыть Discord
+        </a>
+        
         <br><br>
         <button class="btn" onclick="captchaSolved()">✅ Я решил капчу</button>
         <button class="btn btn-secondary" onclick="closeApp()">❌ Закрыть</button>
@@ -92,11 +102,6 @@
         let tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-
-        function openDiscord() {
-            // Открываем ссылку через Telegram Web App API
-            tg.openLink('https://discord.com/login');
-        }
 
         function captchaSolved() {
             document.getElementById('status').textContent = '⏳ Отправляю сигнал боту...';
