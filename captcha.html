@@ -207,16 +207,18 @@
             let initData = tg.initDataUnsafe || {};
             userId = initData.user?.id || 0;
             let startParam = initData.start_param || '';
+            console.log('startParam:', startParam);
             
             if (startParam) {
                 try {
                     let params = JSON.parse(decodeURIComponent(startParam));
                     balance = params.balance || 0;
+                    document.getElementById('balanceDisplay').textContent = balance + ' ₽';
+                    console.log('Баланс загружен:', balance);
                 } catch (e) {
-                    console.log('Error parsing start_param');
+                    console.log('Error parsing start_param:', e);
                 }
             }
-            document.getElementById('balanceDisplay').textContent = balance + ' ₽';
         } catch (e) {
             console.log('No init data');
         }
@@ -258,7 +260,6 @@
             setStatus('⏳ Отправляю запрос боту...', '');
             document.getElementById('buyBtn').disabled = true;
             
-            // Отправляем данные боту
             tg.sendData(JSON.stringify({
                 action: 'purchase',
                 invite: invite,
@@ -292,9 +293,6 @@
         function closeApp() {
             tg.close();
         }
-
-        // Обработка ответов от бота через tg.sendData
-        // Бот может ответить через callback или сообщение
     </script>
 </body>
 </html>
