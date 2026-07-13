@@ -125,6 +125,7 @@
         }
         .status.success { color: #2ecc71; }
         .status.error { color: #ff6b6b; }
+        .hidden { display: none; }
         .captcha-section {
             margin-top: 12px;
             padding: 12px;
@@ -145,7 +146,9 @@
             margin-top: 8px;
         }
         .captcha-section .btn-discord:hover { background: #4752c4; }
-        .hidden { display: none; }
+        .captcha-section .btn {
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
@@ -186,7 +189,7 @@
             <p style="color: #ff6b6b; font-size: 14px;">🧩 Требуется капча!</p>
             <p style="font-size: 13px; color: #aaa;">Открой Discord в браузере и реши капчу, затем вернись и нажми кнопку.</p>
             <a href="https://discord.com/login" target="_blank" rel="noopener noreferrer" class="btn-discord">🚀 Открыть Discord</a>
-            <button class="btn btn-primary" style="margin-top: 8px;" onclick="captchaSolved()">✅ Я решил капчу</button>
+            <button class="btn btn-primary" onclick="captchaSolved()">✅ Я решил капчу</button>
         </div>
     </div>
 
@@ -198,18 +201,24 @@
         const PRICE_PER_BOOST = 100;
         let balance = 0;
         let userId = 0;
-        let pendingData = {};
 
         // Получаем данные от бота
         try {
             let initData = tg.initDataUnsafe || {};
             userId = initData.user?.id || 0;
-            let params = JSON.parse(decodeURIComponent(initData.start_param || '{}'));
-            balance = params.balance || 0;
-            pendingData = params;
+            let startParam = initData.start_param || '';
+            
+            if (startParam) {
+                try {
+                    let params = JSON.parse(decodeURIComponent(startParam));
+                    balance = params.balance || 0;
+                } catch (e) {
+                    console.log('Error parsing start_param');
+                }
+            }
             document.getElementById('balanceDisplay').textContent = balance + ' ₽';
         } catch (e) {
-            console.log('No start param');
+            console.log('No init data');
         }
 
         // Обновление цены при изменении количества
@@ -221,7 +230,6 @@
             let total = qty * PRICE_PER_BOOST;
             document.getElementById('totalPrice').textContent = total + ' ₽';
         });
-        // Инициализация
         document.getElementById('qtyInput').dispatchEvent(new Event('input'));
 
         function startPurchase() {
@@ -266,6 +274,7 @@
                 action: 'captcha_solved',
                 user_id: userId
             }));
+            document.getElementById('captchaSection').style.display = 'none';
         }
 
         function setStatus(text, type) {
@@ -284,8 +293,8 @@
             tg.close();
         }
 
-        // Обработка данных от бота (через ответы)
-        tg.onEvent('viewportChanged', function() {});
+        // Обработка ответов от бота через tg.sendData
+        // Бот может ответить через callback или сообщение
     </script>
 </body>
 </html>
