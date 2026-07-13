@@ -3,99 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xray Boost — Капча</title>
+    <title>Xray Boost — Покупка</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: Arial, sans-serif;
             background: #1a1a2e;
             color: white;
-            text-align: center;
             padding: 20px;
-            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .container {
-            max-width: 400px;
-            margin: 0 auto;
+            max-width: 420px;
+            width: 100%;
             background: #16213e;
-            padding: 20px;
+            padding: 24px;
             border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
         }
-        h1 { color: #ff6b6b; }
-        .btn {
-            display: inline-block;
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 30px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-            margin: 5px;
-            text-decoration: none;
-            width: 80%;
-        }
-        .btn:hover { transform: scale(1.05); }
-        .btn-secondary { background: #444; }
-        .btn-discord {
-            background: #7289da;
-        }
-        .btn-discord:hover { background: #5b6eae; }
-        .status { 
-            margin: 15px 0; 
-            padding: 10px; 
-            background: #0f3460; 
-            border-radius: 8px; 
-            color: #ffd93d; 
-        }
-        .status.success { color: #2ecc71; }
-        .steps {
-            text-align: left;
-            background: #1a1a40;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-        .steps li { margin: 8px 0; color: #ccc; }
-        .info {
-            background: #0a0a1a;
-            padding: 10px;
-            border-radius: 8px;
+        h1 {
             color: #ff6b6b;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: #aaa;
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .balance-box {
+            background: #0f3460;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
             font-size: 14px;
         }
-        .btn-discord {
+        .balance-box .label { color: #aaa; }
+        .balance-box .value { color: #2ecc71; font-weight: bold; }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 4px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #0f3460;
+            border-radius: 8px;
+            background: #0a0a1a;
+            color: white;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+        }
+        .form-group input::placeholder {
+            color: #555;
+        }
+        .price-info {
+            background: #0f3460;
+            padding: 10px 14px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .price-info .label { color: #aaa; }
+        .price-info .value { color: #ffd93d; font-weight: bold; }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 8px;
+        }
+        .btn-primary {
+            background: #ff6b6b;
+            color: white;
+        }
+        .btn-primary:hover { transform: scale(1.02); background: #ff4757; }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background: #444;
+            color: white;
+        }
+        .btn-secondary:hover { background: #555; }
+        .status {
+            margin: 12px 0;
+            padding: 10px;
+            border-radius: 8px;
+            background: #0f3460;
+            color: #ffd93d;
+            font-size: 13px;
+            text-align: center;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .status.success { color: #2ecc71; }
+        .status.error { color: #ff6b6b; }
+        .captcha-section {
+            margin-top: 12px;
+            padding: 12px;
+            background: #0a0a1a;
+            border-radius: 8px;
+            border: 1px solid #ff6b6b;
+            display: none;
+        }
+        .captcha-section .btn-discord {
             background: #5865f2;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
         }
-        .btn-discord:hover {
-            background: #4752c4;
-        }
+        .captcha-section .btn-discord:hover { background: #4752c4; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🧩 Реши капчу</h1>
-        <div class="info">⚠️ Открой Discord в браузере</div>
-        <p>Нажми кнопку, чтобы открыть Discord и решить капчу.</p>
+        <h1>🚀 Xray Boost</h1>
+        <p class="subtitle">Примени буст на свой сервер</p>
         
-        <div class="steps">
-            <ol>
-                <li>Нажми «Открыть Discord»</li>
-                <li>Войди в аккаунт и реши капчу</li>
-                <li>Вернись сюда и нажми «✅ Я решил капчу»</li>
-            </ol>
+        <div class="balance-box">
+            <span class="label">💰 Твой баланс</span>
+            <span class="value" id="balanceDisplay">0 ₽</span>
         </div>
         
-        <!-- ПРЯМАЯ ССЫЛКА (без JS) -->
-        <a href="https://discord.com/login" target="_blank" rel="noopener noreferrer" class="btn btn-discord">
-            🚀 Открыть Discord
-        </a>
+        <div class="form-group">
+            <label>🔗 Ссылка-приглашение на сервер</label>
+            <input type="text" id="inviteInput" placeholder="https://discord.gg/yourlink" value="">
+        </div>
         
-        <br><br>
-        <button class="btn" onclick="captchaSolved()">✅ Я решил капчу</button>
+        <div class="form-group">
+            <label>📊 Количество бустов (чётное)</label>
+            <input type="number" id="qtyInput" placeholder="2, 4, 6..." value="2" min="2" step="2">
+        </div>
+        
+        <div class="price-info">
+            <span class="label">💲 Цена за буст</span>
+            <span class="value" id="pricePerBoost">100 ₽</span>
+        </div>
+        <div class="price-info">
+            <span class="label">💰 Итого</span>
+            <span class="value" id="totalPrice">200 ₽</span>
+        </div>
+        
+        <div class="status" id="status">⏳ Готов к покупке</div>
+        
+        <button class="btn btn-primary" id="buyBtn" onclick="startPurchase()">✅ Применить буст</button>
         <button class="btn btn-secondary" onclick="closeApp()">❌ Закрыть</button>
+        
+        <div class="captcha-section" id="captchaSection">
+            <p style="color: #ff6b6b; font-size: 14px;">🧩 Требуется капча!</p>
+            <p style="font-size: 13px; color: #aaa;">Открой Discord в браузере и реши капчу, затем вернись и нажми кнопку.</p>
+            <a href="https://discord.com/login" target="_blank" rel="noopener noreferrer" class="btn-discord">🚀 Открыть Discord</a>
+            <button class="btn btn-primary" style="margin-top: 8px;" onclick="captchaSolved()">✅ Я решил капчу</button>
+        </div>
     </div>
 
     <script>
@@ -103,25 +195,97 @@
         tg.ready();
         tg.expand();
 
-        function captchaSolved() {
-            document.getElementById('status').textContent = '⏳ Отправляю сигнал боту...';
+        const PRICE_PER_BOOST = 100;
+        let balance = 0;
+        let userId = 0;
+        let pendingData = {};
+
+        // Получаем данные от бота
+        try {
+            let initData = tg.initDataUnsafe || {};
+            userId = initData.user?.id || 0;
+            let params = JSON.parse(decodeURIComponent(initData.start_param || '{}'));
+            balance = params.balance || 0;
+            pendingData = params;
+            document.getElementById('balanceDisplay').textContent = balance + ' ₽';
+        } catch (e) {
+            console.log('No start param');
+        }
+
+        // Обновление цены при изменении количества
+        document.getElementById('qtyInput').addEventListener('input', function() {
+            let qty = parseInt(this.value) || 0;
+            if (qty < 2) qty = 2;
+            if (qty % 2 !== 0) qty = Math.floor(qty / 2) * 2;
+            this.value = qty;
+            let total = qty * PRICE_PER_BOOST;
+            document.getElementById('totalPrice').textContent = total + ' ₽';
+        });
+        // Инициализация
+        document.getElementById('qtyInput').dispatchEvent(new Event('input'));
+
+        function startPurchase() {
+            let invite = document.getElementById('inviteInput').value.trim();
+            let qty = parseInt(document.getElementById('qtyInput').value) || 2;
             
+            if (!invite) {
+                setStatus('❌ Введите ссылку-приглашение', 'error');
+                return;
+            }
+            if (!invite.includes('discord.gg/') && !invite.includes('discord.com/invite/')) {
+                setStatus('❌ Неверный формат ссылки', 'error');
+                return;
+            }
+            if (qty < 2 || qty % 2 !== 0) {
+                setStatus('❌ Количество должно быть чётным (2, 4, 6...)', 'error');
+                return;
+            }
+            
+            let total = qty * PRICE_PER_BOOST;
+            if (total > balance) {
+                setStatus(`❌ Недостаточно средств! Нужно ${total} ₽`, 'error');
+                return;
+            }
+            
+            setStatus('⏳ Отправляю запрос боту...', '');
+            document.getElementById('buyBtn').disabled = true;
+            
+            // Отправляем данные боту
             tg.sendData(JSON.stringify({
-                action: 'captcha_solved'
+                action: 'purchase',
+                invite: invite,
+                qty: qty,
+                total: total,
+                user_id: userId
             }));
-            
-            setTimeout(() => {
-                document.getElementById('status').textContent = '✅ Сигнал отправлен! Закрой это окно.';
-                document.getElementById('status').className = 'status success';
-                setTimeout(() => {
-                    tg.close();
-                }, 2000);
-            }, 1000);
+        }
+
+        function captchaSolved() {
+            setStatus('⏳ Отправляю сигнал боту...', '');
+            tg.sendData(JSON.stringify({
+                action: 'captcha_solved',
+                user_id: userId
+            }));
+        }
+
+        function setStatus(text, type) {
+            let el = document.getElementById('status');
+            el.textContent = text;
+            el.className = 'status' + (type ? ' ' + type : '');
+        }
+
+        function showCaptcha() {
+            document.getElementById('captchaSection').style.display = 'block';
+            setStatus('🧩 Реши капчу и нажми кнопку', '');
+            document.getElementById('buyBtn').disabled = false;
         }
 
         function closeApp() {
             tg.close();
         }
+
+        // Обработка данных от бота (через ответы)
+        tg.onEvent('viewportChanged', function() {});
     </script>
 </body>
 </html>
