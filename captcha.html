@@ -138,19 +138,15 @@
         .captcha-section .btn {
             margin-top: 8px;
         }
-        .info-text {
-            color: #aaa;
-            font-size: 13px;
-            text-align: center;
-            margin-bottom: 16px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🚀 Xray Boost</h1>
         <p class="subtitle">Примени буст на свой сервер</p>
-        <p class="info-text">💰 Средства будут списаны с твоего баланса автоматически</p>
+        <p style="color: #aaa; font-size: 13px; text-align: center; margin-bottom: 16px;">
+            💰 Средства будут списаны с твоего баланса автоматически
+        </p>
         
         <div class="form-group">
             <label>🔗 Ссылка-приглашение на сервер</label>
@@ -242,13 +238,6 @@
                 total: total,
                 user_id: userId
             }));
-            
-            // Ждём ответ от бота (через callback_query)
-            // Бот ответит через answerWebAppQuery или сообщением
-            // Пока просто ждём
-            setTimeout(() => {
-                document.getElementById('buyBtn').disabled = false;
-            }, 30000); // 30 секунд таймаут
         }
 
         function captchaSolved() {
@@ -275,6 +264,10 @@
         function closeApp() {
             tg.close();
         }
+
+        // Ждём ответ от бота через сообщение
+        // Бот ответит в чат, когда обработает покупку
+        // Пока просто ждём
     </script>
 </body>
 </html>
