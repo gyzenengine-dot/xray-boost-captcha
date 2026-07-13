@@ -35,6 +35,7 @@
             transition: 0.3s;
             margin: 5px;
             text-decoration: none;
+            width: 80%;
         }
         .btn:hover { transform: scale(1.05); }
         .btn-secondary { background: #444; }
@@ -68,12 +69,20 @@
         .link-box a {
             color: #7ec8e3;
         }
+        .info {
+            background: #0a0a1a;
+            padding: 10px;
+            border-radius: 8px;
+            color: #ff6b6b;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🧩 Реши капчу</h1>
-        <p>Discord требует капчу для этого аккаунта.</p>
+        <div class="info">⚠️ Discord не открывается внутри приложения</div>
+        <p>Открой Discord в браузере, войди и реши капчу.</p>
         
         <div class="steps">
             <ol>
@@ -83,13 +92,7 @@
             </ol>
         </div>
         
-        <div class="link-box">
-            🔗 <a href="https://discord.com/login" target="_blank">Открыть Discord для входа</a>
-        </div>
-        
-        <div class="status" id="status">⏳ Ожидание...</div>
-        
-        <button class="btn btn-discord" onclick="openDiscord()">🚀 Открыть Discord</button>
+        <a href="https://discord.com/login" target="_blank" class="btn btn-discord">🚀 Открыть Discord</a>
         <br><br>
         <button class="btn" onclick="captchaSolved()">✅ Я решил капчу</button>
         <button class="btn btn-secondary" onclick="closeApp()">❌ Закрыть</button>
@@ -99,10 +102,6 @@
         let tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-
-        function openDiscord() {
-            window.open('https://discord.com/login', '_blank');
-        }
 
         function captchaSolved() {
             document.getElementById('status').textContent = '⏳ Отправляю сигнал боту...';
