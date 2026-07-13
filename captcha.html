@@ -194,39 +194,27 @@
 
         // === ПОЛУЧЕНИЕ USER_ID ===
         try {
-            // Способ 1: из initDataUnsafe
             if (tg.initDataUnsafe?.user?.id) {
                 userId = tg.initDataUnsafe.user.id;
             }
             
-            // Способ 2: из start_param (если есть)
             if (!userId && tg.initDataUnsafe?.start_param) {
                 try {
                     let params = JSON.parse(decodeURIComponent(tg.initDataUnsafe.start_param));
                     userId = params.chat_id || params.user_id || 0;
-                } catch(e) {
-                    console.error('Ошибка парсинга start_param:', e);
-                }
+                } catch(e) {}
             }
             
-            // Способ 3: из строки initData
             if (!userId && tg.initData) {
                 try {
                     const params = new URLSearchParams(tg.initData);
                     userId = parseInt(params.get('user_id')) || 0;
-                } catch(e) {
-                    console.error('Ошибка парсинга initData:', e);
-                }
+                } catch(e) {}
             }
             
             console.log('🔍 User ID:', userId);
         } catch(e) {
             console.error('Ошибка получения user_id:', e);
-        }
-
-        // Если userId = 0 — предупреждение, но бот использует chat_id
-        if (userId === 0) {
-            console.warn('⚠️ User ID = 0, бот будет использовать chat_id из callback');
         }
 
         // Обновление цены при изменении количества
@@ -291,12 +279,6 @@
             let el = document.getElementById('status');
             el.textContent = text;
             el.className = 'status' + (type ? ' ' + type : '');
-        }
-
-        function showCaptcha() {
-            document.getElementById('captchaSection').style.display = 'block';
-            setStatus('🧩 Реши капчу и нажми кнопку', '');
-            document.getElementById('buyBtn').disabled = false;
         }
 
         function closeApp() {
