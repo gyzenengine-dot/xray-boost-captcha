@@ -37,17 +37,6 @@
             font-size: 14px;
             margin-bottom: 20px;
         }
-        .balance-box {
-            background: #0f3460;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-        }
-        .balance-box .label { color: #aaa; }
-        .balance-box .value { color: #2ecc71; font-weight: bold; }
         .form-group {
             margin-bottom: 16px;
         }
@@ -149,17 +138,19 @@
         .captcha-section .btn {
             margin-top: 8px;
         }
+        .info-text {
+            color: #aaa;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🚀 Xray Boost</h1>
         <p class="subtitle">Примени буст на свой сервер</p>
-        
-        <div class="balance-box">
-            <span class="label">💰 Твой баланс</span>
-            <span class="value" id="balanceDisplay">⏳ Загрузка...</span>
-        </div>
+        <p class="info-text">💰 Средства будут списаны с твоего баланса автоматически</p>
         
         <div class="form-group">
             <label>🔗 Ссылка-приглашение на сервер</label>
@@ -182,7 +173,7 @@
         
         <div class="status" id="status">⏳ Готов к покупке</div>
         
-        <button class="btn btn-primary" id="buyBtn" onclick="startPurchase()">✅ Применить буст</button>
+        <button class="btn btn-primary" id="buyBtn" onclick="startPurchase()">✅ Купить буст</button>
         <button class="btn btn-secondary" onclick="closeApp()">❌ Закрыть</button>
         
         <div class="captcha-section" id="captchaSection">
@@ -199,23 +190,13 @@
         tg.expand();
 
         const PRICE_PER_BOOST = 21;
-        let balance = 0;
         let userId = 0;
 
-        // Получаем ID пользователя и запрашиваем баланс
+        // Получаем ID пользователя
         try {
             let initData = tg.initDataUnsafe || {};
             userId = initData.user?.id || 0;
             console.log('User ID:', userId);
-            
-            // Отправляем запрос на получение баланса через WebApp
-            tg.sendData(JSON.stringify({
-                action: 'get_balance',
-                user_id: userId
-            }));
-            
-            // Показываем, что баланс загружается
-            document.getElementById('balanceDisplay').textContent = '⏳ Загрузка...';
         } catch (e) {
             console.log('Error:', e);
         }
@@ -249,14 +230,11 @@
             }
             
             let total = qty * PRICE_PER_BOOST;
-            if (total > balance) {
-                setStatus(`❌ Недостаточно средств! Нужно ${total} ₽`, 'error');
-                return;
-            }
             
             setStatus('⏳ Отправляю запрос боту...', '');
             document.getElementById('buyBtn').disabled = true;
             
+            // Отправляем данные боту
             tg.sendData(JSON.stringify({
                 action: 'purchase',
                 invite: invite,
@@ -264,6 +242,13 @@
                 total: total,
                 user_id: userId
             }));
+            
+            // Ждём ответ от бота (через callback_query)
+            // Бот ответит через answerWebAppQuery или сообщением
+            // Пока просто ждём
+            setTimeout(() => {
+                document.getElementById('buyBtn').disabled = false;
+            }, 30000); // 30 секунд таймаут
         }
 
         function captchaSolved() {
@@ -290,33 +275,6 @@
         function closeApp() {
             tg.close();
         }
-
-        // Обработка ответа от бота (через answerWebAppQuery)
-        // Данные приходят в tg.initDataUnsafe, но их нужно обработать
-        // В текущей реализации ответ приходит через callback_query
-        // Мы обновляем баланс вручную после получения ответа
-        // Для этого используем setInterval для проверки обновлений
-        let checkCount = 0;
-        let checkInterval = setInterval(function() {
-            checkCount++;
-            // После 5 попыток показываем баланс 0
-            if (checkCount > 5) {
-                clearInterval(checkInterval);
-                if (document.getElementById('balanceDisplay').textContent === '⏳ Загрузка...') {
-                    document.getElementById('balanceDisplay').textContent = '0 ₽';
-                }
-            }
-        }, 1000);
-
-        // В реальном приложении здесь должен быть обработчик ответа от бота
-        // Например, через tg.onEvent('web_app_data', ...)
-        // Но в данной реализации мы используем answerWebAppQuery
-        // и обновляем баланс через callback_query
-
-        // Добавляем обработчик для ответа от бота
-        // Это работает только если бот отправляет данные через answerWebAppQuery
-        // Данные приходят в tg.initDataUnsafe, но их нужно обработать отдельно
-        // Для простоты используем setInterval
     </script>
 </body>
 </html>
