@@ -144,19 +144,6 @@
         .captcha-section .btn {
             margin-top: 8px;
         }
-        .log {
-            background: #0a0a1a;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #7ec8e3;
-            margin-top: 12px;
-            text-align: left;
-            word-break: break-all;
-            max-height: 150px;
-            overflow-y: auto;
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -205,14 +192,14 @@
         const PRICE_PER_BOOST = 21;
         let userId = 0;
 
-        // === ПРАВИЛЬНОЕ ПОЛУЧЕНИЕ USER_ID ===
+        // === ПОЛУЧЕНИЕ USER_ID ===
         try {
             // Способ 1: из initDataUnsafe
             if (tg.initDataUnsafe?.user?.id) {
                 userId = tg.initDataUnsafe.user.id;
             }
             
-            // Способ 2: из start_param
+            // Способ 2: из start_param (если есть)
             if (!userId && tg.initDataUnsafe?.start_param) {
                 try {
                     let params = JSON.parse(decodeURIComponent(tg.initDataUnsafe.start_param));
@@ -235,6 +222,11 @@
             console.log('🔍 User ID:', userId);
         } catch(e) {
             console.error('Ошибка получения user_id:', e);
+        }
+
+        // Если userId = 0 — предупреждение, но бот использует chat_id
+        if (userId === 0) {
+            console.warn('⚠️ User ID = 0, бот будет использовать chat_id из callback');
         }
 
         // Обновление цены при изменении количества
@@ -270,7 +262,6 @@
             setStatus('⏳ Отправляю запрос боту...', '');
             document.getElementById('buyBtn').disabled = true;
             
-            // Отправляем данные боту
             try {
                 tg.sendData(JSON.stringify({
                     action: 'purchase',
